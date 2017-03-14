@@ -168,3 +168,12 @@ def search(request):
             'username': username,
         }
         return render(request, 'books/home.html', context)
+
+
+def profile(request):
+    if not request.user.is_authenticated():
+        return render(request, 'books/login.html')
+
+    username = request.user.username
+    user = User.objects.get(username=username)
+    return render(request, 'books/profile.html', {'user': user,})
