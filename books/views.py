@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
 from .forms import UserForm, BookForm, RemoveBookForm
@@ -145,14 +146,24 @@ def search(request):
         return render(request, 'books/login.html')
 
     username = request.user.username
-    if request.method == 'GET':
-        book_name = request.GET.get('book_name','')
-        book = Book.objects.get(book_name=book_name)
-        return render(request, 'books/detail.html', {'book': book, 'username': username})
-    else:
+    try:
+        query = request.GET['book_name']
+        if Book.objects.filter(book_name__startswith=query):
+            book_list = Book.objects.filter(book_name__startswith=query)
+            return render(request, 'books/search.html', {'book_list': book_list, 'username': username})
+        if User.objects.filter(username__startswith=query):
+            user_list = User.objects.filter(username__startswith=query)
+            return render(request, 'books/search.html', {'user_list': user_list, 'username': username})
+        else:
+            context = {
+                'book_list': Book.objects.order_by('book_name')[:50],
+                'username': username,
+            }
+            return render(request, 'books/home.html', context)
+    except:
         book_list = Book.objects.order_by('book_name')[:50]
         context = {
-            'success_message': "The book is removed",
+            'error_message': "Please Give the book name or username",
             'book_list': book_list,
             'username': username,
         }

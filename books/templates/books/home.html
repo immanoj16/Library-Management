@@ -22,6 +22,10 @@
         <h3 style="color: green;">{{ success_message }}</h3>
     {% endif %}
 
+    {% if error_message %}
+        <h3 style="color: red;">{{ error_message }}</h3>
+    {% endif %}
+
     {% if book_list %}
         <table class="table table-hover">
             <tr>
