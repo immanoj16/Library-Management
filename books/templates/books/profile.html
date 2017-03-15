@@ -4,21 +4,31 @@
 
 {% block content %}
     <h2 class="page-header">General Account Settings</h2>
+    {% if success_message %}
+        <div class="alert alert-success">
+            <span class="glyphicon glyphicon-ok-circle"></span> {{ success_message }}
+        </div>
+    {% endif %}
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
     <table class="table table-hover">
         <tr>
             <td>Username</td>
             <td>{{ user.username }}</td>
-            <td><span class="glyphicon glyphicon-pencil"><span class="profile" data-toggle="modal" data-target="#name">Edit</span></span></td>
+            <td><span class="glyphicon glyphicon-pencil"></span><span class="profile" data-toggle="modal" data-target="#name">Edit</span></td>
         </tr>
         <tr>
             <td>Email</td>
             <td>{{ user.email }}</td>
-            <td><span class="glyphicon glyphicon-pencil"><span class="profile" data-toggle="modal" data-target="#email">Edit</span></span></td>
+            <td><span class="glyphicon glyphicon-pencil"></span><span class="profile" data-toggle="modal" data-target="#email">Edit</span></td>
         </tr>
         <tr>
             <td>Password</td>
             <td>{{ user.password }}</td>
-            <td><span class="glyphicon glyphicon-pencil"><span class="profile" data-toggle="modal" data-target="#password">Edit</span></span></td>
+            <td><span class="glyphicon glyphicon-pencil"></span><span class="profile" data-toggle="modal" data-target="#password">Edit</span></td>
         </tr>
     </table>
 
@@ -30,7 +40,7 @@
                     <h4 class="modal-title" id="myModalLabelName"> Change Username </h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" method="" action="">{% csrf_token %}
+                    <form class="form-horizontal" method="post" action="{% url 'books:edit' %}">{% csrf_token %}
                         <div class="form-group">
                             <label for="username" class="col-sm-3 control-label">User Name: </label>
                             <div class="col-sm-5">
@@ -60,7 +70,7 @@
                     <h4 class="modal-title" id="myModalLabelEmail"> Change Email </h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" method="" action="">{% csrf_token %}
+                    <form class="form-horizontal" method="post" action="{% url 'books:edit' %}">{% csrf_token %}
                         <div class="form-group">
                             <label for="email" class="col-sm-3 control-label">Email: </label>
                             <div class="col-sm-5">
@@ -90,18 +100,18 @@
                     <h4 class="modal-title" id="myModalLabelPass"> Change Password </h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" method="" action="">{% csrf_token %}
+                    <form class="form-horizontal" method="post" action="{% url 'books:edit' %}">{% csrf_token %}
                         <div class="form-group">
                             <label for="npassword" class="col-sm-4 control-label">New Password: </label>
                             <div class="col-sm-5">
-                                <input type="password" class="form-control" id="npassword" name="password" placeholder="New Password">
+                                <input type="password" class="form-control" id="npassword" name="npassword" placeholder="New Password">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="cpassword" class="col-sm-4 control-label">Confirm Password: </label>
                             <div class="col-sm-5">
-                                <input type="password" class="form-control" id="cpassword" name="password" placeholder="Confirm Password">
+                                <input type="password" class="form-control" id="cpassword" name="cpassword" placeholder="Confirm Password">
                             </div>
                         </div>
 

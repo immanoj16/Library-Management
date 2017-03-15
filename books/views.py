@@ -43,7 +43,7 @@ def login_user(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                book_list = Book.objects.order_by('id')[:50]
+                book_list = Book.objects.order_by('book_name')[:50]
                 username = request.user.username
                 return render(request, 'books/home.html', {'book_list': book_list, 'username': username, })
             else:
@@ -77,7 +77,7 @@ def addbook(request):
         return render(request, 'books/login.html')
 
     username = request.user.username
-    if username == 'kanhu':
+    if username == 'admin':
         if request.method == 'GET':
 
             form = BookForm(request.GET)
@@ -118,7 +118,7 @@ def removeBook(request):
         return render(request, 'books/login.html')
 
     username = request.user.username
-    if username == 'kanhu':
+    if username == 'admin':
 
         if request.method == 'GET':
             form = RemoveBookForm(request.GET)
@@ -177,3 +177,53 @@ def profile(request):
     username = request.user.username
     user = User.objects.get(username=username)
     return render(request, 'books/profile.html', {'user': user, 'username': username,})
+
+
+def edit(request):
+    if request.POST.get('username'):
+        username = request.POST.get('username','')
+        user = User.objects.get(username=request.user.username)
+        user.username = username
+        user.save()
+
+        context = {
+            'user': User.objects.get(username=username),
+            'username': username,
+            'success_message': "Username is changed successfully",
+        }
+        return render(request, 'books/profile.html', context)
+
+    elif request.POST.get('email'):
+        email = request.POST.get('email','')
+        user = User.objects.get(username=request.user.username)
+        user.email = email
+        user.save()
+
+        context = {
+            'user': User.objects.get(username=request.user.username),
+            'success_message': "Email is changed successfully",
+        }
+        return render(request, 'books/profile.html', context)
+
+    else:
+        npassword = request.POST.get('npassword','')
+        cpassword = request.POST.get('cpassword','')
+
+        username = request.user.username
+        user = User.objects.get(username=username)
+
+        if npassword == cpassword:
+            user.set_password(npassword)
+            user.save()
+
+            context = {
+                'user': user,
+                'success_message': "Password is successfully changed."
+            }
+            return render(request, 'books/profile.html', context)
+        else:
+            context = {
+                'user': user,
+                'error_message': "Didn't match password!!!"
+            }
+            return render(request, 'books/profile.html', context)

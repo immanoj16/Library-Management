@@ -19,11 +19,14 @@
     <h3>Book List</h3>
 
     {% if success_message %}
-        <h3 style="color: green;">{{ success_message }}</h3>
+        <div class="alert alert-success">
+            {{ success_message }}
+        </div>
     {% endif %}
-
     {% if error_message %}
-        <h3 style="color: red;">{{ error_message }}</h3>
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
     {% endif %}
 
     {% if book_list %}

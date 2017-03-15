@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href="{%  static 'books/img/title.png' %}">
     <link rel="stylesheet" href="{% static 'books/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'books/css/style.css' %}">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="{% static 'books/js/jquery-3.1.1.min.js' %}"></script>
     <script src="{% static 'books/js/bootstrap.min.js' %}"></script>
 </head>
@@ -33,7 +35,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% block search %}
                     {% endblock %}
-                    {% if username == 'kanhu' %}
+                    {% if username == 'admin' %}
                     <li>
                         <a href="{% url 'books:addbook' %}">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Add Books

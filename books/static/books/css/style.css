@@ -10,13 +10,15 @@ body {
 	margin: auto;
 }
 
+.navbar {
+    border-radius: 0;
+}
+
+.navbar-brand {
+    font-family: 'Satisfy', cursive;
+}
+
 .profile {
     cursor: pointer;
     text-decoration: underline;
-    font-size: large;
-}
-
-.col-lg-9 {
-    display: inline;
-    margin: 0 auto;
 }

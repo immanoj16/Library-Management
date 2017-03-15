@@ -3,7 +3,9 @@
 {% block title %}Add book to the library{% endblock %}
 
 {% if error_message %}
-    <h3 style="color: red;">{{ error_message }}</h3>
+    <div class="alert alert-danger">
+        {{ error_message }}
+    </div>
 {% endif %}
 
 {% block content %}

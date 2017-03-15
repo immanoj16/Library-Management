@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^removebook', views.removeBook, name='removebook'),
     url(r'^search/$', views.search, name='search'),
     url(r'^profile/', views.profile, name='profile'),
+    url(r'^edit/$', views.edit, name='edit'),
 ]
