@@ -176,4 +176,4 @@ def profile(request):
 
     username = request.user.username
     user = User.objects.get(username=username)
-    return render(request, 'books/profile.html', {'user': user,})
+    return render(request, 'books/profile.html', {'user': user, 'username': username,})

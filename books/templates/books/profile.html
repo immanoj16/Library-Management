@@ -3,32 +3,119 @@
 {% block title %}Profile page{% endblock %}
 
 {% block content %}
-    <form class="form-horizontal" method="post" action="{% url 'books:profile' %}">{% csrf_token %}
-        <div class="form-group">
-            <label for="username" class="col-sm-2 control-label">User Name: </label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
-            </div>
-        </div>
+    <h2 class="page-header">General Account Settings</h2>
+    <table class="table table-hover">
+        <tr>
+            <td>Username</td>
+            <td>{{ user.username }}</td>
+            <td><span class="glyphicon glyphicon-pencil"><span class="profile" data-toggle="modal" data-target="#name">Edit</span></span></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ user.email }}</td>
+            <td><span class="glyphicon glyphicon-pencil"><span class="profile" data-toggle="modal" data-target="#email">Edit</span></span></td>
+        </tr>
+        <tr>
+            <td>Password</td>
+            <td>{{ user.password }}</td>
+            <td><span class="glyphicon glyphicon-pencil"><span class="profile" data-toggle="modal" data-target="#password">Edit</span></span></td>
+        </tr>
+    </table>
 
-        <div class="form-group">
-            <label for="email" class="col-sm-2 control-label">Email: </label>
-            <div class="col-sm-10">
-                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
-            </div>
-        </div>
+    <!-- Modal for Name -->
+    <div class="modal fade" id="name" tabindex="-1" role="dialog" aria-labelledby="myModalLabelName" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabelName"> Change Username </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="" action="">{% csrf_token %}
+                        <div class="form-group">
+                            <label for="username" class="col-sm-3 control-label">User Name: </label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="New Username">
+                            </div>
+                        </div>
 
-        <div class="form-group">
-            <label for="password" class="col-sm-2 control-label">Password: </label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="password" name="password" value="{{ user.password }}">
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-5">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default">Save</button>
+    <!-- Modal for Email -->
+    <div class="modal fade" id="email" tabindex="-1" role="dialog" aria-labelledby="myModalLabelEmail" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabelEmail"> Change Email </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="" action="">{% csrf_token %}
+                        <div class="form-group">
+                            <label for="email" class="col-sm-3 control-label">Email: </label>
+                            <div class="col-sm-5">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="New Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-5">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+
+    <!-- Modal for Password -->
+    <div class="modal fade" id="password" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPass" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabelPass"> Change Password </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="" action="">{% csrf_token %}
+                        <div class="form-group">
+                            <label for="npassword" class="col-sm-4 control-label">New Password: </label>
+                            <div class="col-sm-5">
+                                <input type="password" class="form-control" id="npassword" name="password" placeholder="New Password">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cpassword" class="col-sm-4 control-label">Confirm Password: </label>
+                            <div class="col-sm-5">
+                                <input type="password" class="form-control" id="cpassword" name="password" placeholder="Confirm Password">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-5">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
