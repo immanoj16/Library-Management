@@ -1,8 +1,8 @@
 {% extends 'books/base.html' %}
 
-{% block title %}
-    Book home page
-{% endblock %}
+{% block title %}Book home page{% endblock %}
+
+{% block books_active %}active{% endblock %}
 
 {% block search %}
     <form class="navbar-form navbar-left" action="{% url 'books:search' %}" method="get">

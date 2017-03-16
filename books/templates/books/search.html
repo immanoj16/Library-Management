@@ -5,7 +5,9 @@
 {% block content %}
     <h2>Hello {{ username }}</h2>
     {% if book_list or user_list %}
+        <h3>Searched Results are: </h3>
         {% if book_list %}
+            <h3>Book List: </h3>
             <table class="table table-hover">
                 <tr>
                     <th>ISBN No</th>
@@ -27,7 +29,8 @@
                 {% endfor %}
             </table>
         {% endif %}
-        {% if user_list %}
+        {% if user_list and username == 'admin' %}
+            <h3>User List:</h3>
             <table class="table table-hover">
                 <tr>
                     <th>User Name</th>

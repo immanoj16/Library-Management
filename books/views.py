@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
@@ -65,7 +66,9 @@ def register(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                home(request)
+                username = request.user.username
+                book_list = Book.objects.order_by('book_name')[:50]
+                return render(request, 'books/home.html', {'book_list': book_list, 'username': username})
 
     context = {
         'form': form,
@@ -147,15 +150,17 @@ def search(request):
         return render(request, 'books/login.html')
 
     username = request.user.username
-    try:
-        query = request.GET['book_name']
-        if Book.objects.filter(book_name__startswith=query):
-            book_list = Book.objects.filter(book_name__startswith=query)
-            return render(request, 'books/search.html', {'book_list': book_list, 'username': username})
-        if User.objects.filter(username__startswith=query):
-            user_list = User.objects.filter(username__startswith=query)
-            return render(request, 'books/search.html', {'user_list': user_list, 'username': username})
-    except:
+    query = request.GET['book_name']
+    if query:
+        book_list = Book.objects.filter(Q(book_name__icontains=query)).distinct()
+        user_list = User.objects.filter(Q(username__startswith=query)).distinct()
+        context = {
+            'book_list': book_list,
+            'user_list': user_list,
+            'username': username,
+        }
+        return render(request, 'books/search.html', context)
+    else:
         book_list = Book.objects.order_by('book_name')[:50]
         context = {
             'error_message': "Please Give the book name or username",
@@ -175,6 +180,7 @@ def profile(request):
 
 
 def edit(request):
+
     if request.POST.get('username'):
         username = request.POST.get('username','')
         user = User.objects.get(username=request.user.username)
@@ -201,24 +207,32 @@ def edit(request):
         return render(request, 'books/profile.html', context)
 
     else:
-        npassword = request.POST.get('npassword','')
-        cpassword = request.POST.get('cpassword','')
+        if request.user.check_password(request.POST['opassword']):
+            npassword = request.POST.get('npassword','')
+            cpassword = request.POST.get('cpassword','')
 
-        username = request.user.username
-        user = User.objects.get(username=username)
+            username = request.user.username
+            user = User.objects.get(username=username)
 
-        if npassword == cpassword:
-            user.set_password(npassword)
-            user.save()
+            if npassword == cpassword:
+                user.set_password(npassword)
+                user.save()
 
-            context = {
-                'user': user,
-                'success_message': "Password is successfully changed."
-            }
-            return render(request, 'books/profile.html', context)
+                context = {
+                    'user': user,
+                    'success_message': "Password is successfully changed."
+                }
+                return render(request, 'books/profile.html', context)
+            else:
+                context = {
+                    'user': user,
+                    'error_message': "Didn't match password!!!"
+                }
+                return render(request, 'books/profile.html', context)
         else:
+            user = User.objects.get(username=request.user.username)
             context = {
                 'user': user,
-                'error_message': "Didn't match password!!!"
+                'error_message': "Old password was incorrect!!!"
             }
             return render(request, 'books/profile.html', context)
