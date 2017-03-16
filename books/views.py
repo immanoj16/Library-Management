@@ -65,7 +65,8 @@ def register(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return render(request, 'books/home.html', {})
+                home(request)
+
     context = {
         'form': form,
     }
@@ -154,12 +155,6 @@ def search(request):
         if User.objects.filter(username__startswith=query):
             user_list = User.objects.filter(username__startswith=query)
             return render(request, 'books/search.html', {'user_list': user_list, 'username': username})
-        else:
-            context = {
-                'book_list': Book.objects.order_by('book_name')[:50],
-                'username': username,
-            }
-            return render(request, 'books/home.html', context)
     except:
         book_list = Book.objects.order_by('book_name')[:50]
         context = {
