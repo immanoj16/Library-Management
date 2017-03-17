@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Book
+from .models import Book, UserProfile
 
 
 class UserForm(forms.ModelForm):
@@ -8,7 +8,37 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+BRANCH_CHOICES = (
+    ('B.Tech', 'B.Tech'),
+    ('MCA', 'MCA'),
+)
+
+YEAR_CHOICES = (
+    ('1st', '1st'),
+    ('2nd', '2nd'),
+    ('3rd', '3rd'),
+    ('4th', '4th'),
+    ('5th', '5th'),
+)
+
+
+class UserProfileForm(forms.ModelForm):
+    branch = forms.ChoiceField(choices=BRANCH_CHOICES)
+    year = forms.ChoiceField(choices=YEAR_CHOICES)
+
+    class Meta:
+        model = UserProfile
+        fields = ['roll_no', 'branch', 'year', 'birth_date', 'phone']
+        widgets = {
+            'birth_date': DateInput(),
+        }
 
 
 class BookForm(forms.Form):

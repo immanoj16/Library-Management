@@ -6,8 +6,8 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
-from .forms import UserForm, BookForm, RemoveBookForm
-from .models import Book
+from .forms import UserForm, UserProfileForm, BookForm, RemoveBookForm
+from .models import Book, UserProfile
 
 
 def home(request):
@@ -27,11 +27,12 @@ def detail(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     return render(request, 'books/detail.html', {'book': book, 'username': username})
 
+
 def logout_user(request):
     logout(request)
-    form = UserForm(request.POST or None)
+    user_form = UserForm(request.POST or None)
     context = {
-        "form": form,
+        "user_form": user_form,
     }
     return render(request, 'books/login.html', context)
 
@@ -55,13 +56,15 @@ def login_user(request):
 
 
 def register(request):
-    form = UserForm(request.POST or None)
-    if form.is_valid():
-        user = form.save(commit=False)
-        username = form.cleaned_data['username']
-        password = form.cleaned_data['password']
+    user_form = UserForm(request.POST or None)
+    profile_form = UserProfileForm(request.POST or None)
+    if user_form.is_valid() and profile_form.is_valid():
+        user = user_form.save(commit=False)
+        username = user_form.cleaned_data['username']
+        password = user_form.cleaned_data['password']
         user.set_password(password)
         user.save()
+        profile_form.save()
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
@@ -71,7 +74,8 @@ def register(request):
                 return render(request, 'books/home.html', {'book_list': book_list, 'username': username})
 
     context = {
-        'form': form,
+        'user_form': user_form,
+        'profile_form': profile_form,
     }
     return render(request, 'books/register.html', context)
 
@@ -236,3 +240,34 @@ def edit(request):
                 'error_message': "Old password was incorrect!!!"
             }
             return render(request, 'books/profile.html', context)
+
+
+def adduser(request):
+    if not request.user.is_authenticated():
+        return render(request, 'books/login.html')
+
+    username = request.user.username
+    if username == 'admin':
+        if request.method == 'POST':
+
+            form = BookForm(request.GET)
+
+            if form.is_valid():
+
+
+
+                book = User(
+
+                )
+                book.save()
+
+
+
+                context = {
+                    'success_message': "New book is added",
+                    'user_list': user_list,
+                    'username': username,
+                }
+                return render(request, 'books/home.html', context)
+            else:
+                return render(request, 'books/addbook.html', {'error_message': "Data is invalid"})
