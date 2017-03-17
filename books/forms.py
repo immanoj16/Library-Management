@@ -8,7 +8,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name',]
 
 
 class DateInput(forms.DateInput):
@@ -42,7 +42,6 @@ class UserProfileForm(forms.ModelForm):
 
 
 class BookForm(forms.Form):
-    # to take the input of username
     isbn_no = forms.CharField(max_length=100)
     book_name = forms.CharField(max_length=100)
     author_name = forms.CharField(max_length=100)

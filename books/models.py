@@ -21,12 +21,12 @@ YEAR_CHOICES = (
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-    roll_no = models.CharField(max_length=10, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    roll_no = models.CharField(max_length=10)
     branch = models.CharField(choices=BRANCH_CHOICES, max_length=6)
     year = models.CharField(choices=YEAR_CHOICES, max_length=3)
     birth_date = models.DateField(blank=False, null=False)
-    phone = models.CharField(max_length=10, blank=True, default='')
+    phone = models.CharField(max_length=10, default='')
 
 
 class Book(models.Model):

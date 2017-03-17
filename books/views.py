@@ -59,13 +59,13 @@ def register(request):
     user_form = UserForm(request.POST or None)
     profile_form = UserProfileForm(request.POST or None)
     if user_form.is_valid() and profile_form.is_valid():
-        user = user_form.save(commit=False)
+        user = user_form.save()
         username = user_form.cleaned_data['username']
         password = user_form.cleaned_data['password']
-        user.set_password(password)
-        user.save()
-        profile_form.save()
         user = authenticate(username=username, password=password)
+        print user
+        prof = profile_form.save()
+        print prof
         if user is not None:
             if user.is_active:
                 login(request, user)
@@ -180,6 +180,7 @@ def profile(request):
 
     username = request.user.username
     user = User.objects.get(username=username)
+    print user.first_name
     return render(request, 'books/profile.html', {'user': user, 'username': username,})
 
 
