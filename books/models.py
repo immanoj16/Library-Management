@@ -28,12 +28,21 @@ class UserProfile(models.Model):
     birth_date = models.DateField(blank=False, null=False)
     phone = models.CharField(max_length=10, default='')
 
+BOOK_CHOICES = (
+    ('Programming', 'Programming'),
+    ('Computer', 'Computer'),
+    ('Math', 'Math'),
+    ('Economics', 'Economics'),
+    ('Accounting', 'Accounting'),
+    ('Others', 'Others')
+)
+
 
 class Book(models.Model):
     isbn_no = models.CharField(max_length=100, null=False)
     book_name = models.CharField(max_length=100)
     author_name = models.CharField(max_length=100)
-    book_type = models.CharField(max_length=50)
+    book_type = models.CharField(choices=BOOK_CHOICES)
     edition = models.IntegerField()
     no_of_books = models.IntegerField()
 

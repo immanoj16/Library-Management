@@ -40,12 +40,21 @@ class UserProfileForm(forms.ModelForm):
             'birth_date': DateInput(),
         }
 
+BOOK_CHOICES = (
+    ('Programming', 'Programming'),
+    ('Computer', 'Computer'),
+    ('Math', 'Math'),
+    ('Economics', 'Economics'),
+    ('Accounting', 'Accounting'),
+    ('Others', 'Others')
+)
+
 
 class BookForm(forms.Form):
     isbn_no = forms.CharField(max_length=100)
     book_name = forms.CharField(max_length=100)
     author_name = forms.CharField(max_length=100)
-    book_type = forms.CharField(max_length=50)
+    book_type = forms.ChoiceField(choices=BOOK_CHOICES)
     edition = forms.IntegerField()
     no_of_books = forms.IntegerField()
 

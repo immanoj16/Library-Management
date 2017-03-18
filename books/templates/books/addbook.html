@@ -36,6 +36,13 @@
         <div class="form-group">
             <label for="book_type" class="col-sm-2 control-label">Book Type: </label>
             <div class="col-sm-5">
+                <select>
+                    {% for choice in field.choices %}
+                        <option name="b_id" value="{{choice.0}}">{{choice.1}}</option>
+                        print choice.0
+                        print choice.1
+                    {% endfor %}
+                </select>
                 <input type="text" class="form-control" id="book_type" name="book_type" placeholder="Book Type">
             </div>
         </div>
