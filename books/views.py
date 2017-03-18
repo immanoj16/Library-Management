@@ -59,13 +59,11 @@ def register(request):
     user_form = UserForm(request.POST or None)
     profile_form = UserProfileForm(request.POST or None)
     if user_form.is_valid() and profile_form.is_valid():
-        user = user_form.save()
+        user_form.save()
+        profile_form.save()
         username = user_form.cleaned_data['username']
         password = user_form.cleaned_data['password']
         user = authenticate(username=username, password=password)
-        print user
-        prof = profile_form.save()
-        print prof
         if user is not None:
             if user.is_active:
                 login(request, user)
