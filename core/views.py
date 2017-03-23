@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 
-from .forms import SignUpForm
+from .forms import SignUpForm, ProfileForm
 
 
 @login_required
@@ -12,16 +12,19 @@ def home(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+        user_form = SignUpForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+        if user_form.is_valid():
+            user = user_form.save()
+            profile_form.save()
             user.refresh_from_db()  # load the profile instance created by the signal
-            user.profile.birth_date = form.cleaned_data.get('birth_date')
+            user.profile.birth_date = user_form.cleaned_data.get('birth_date')
             user.save()
-            raw_password = form.cleaned_data.get('password1')
+            raw_password = user_form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
             return redirect('home')
     else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+        user_form = SignUpForm()
+        profile_form = ProfileForm()
+    return render(request, 'signup.html', {'user_form': user_form, 'profile_form': profile_form})
