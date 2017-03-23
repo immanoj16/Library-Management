@@ -7,8 +7,6 @@ from .forms import SignUpForm
 
 @login_required
 def home(request):
-    if not request.user.is_authenticated():
-        return render(request, 'core/login.html')
     return render(request, 'home.html')
 
 
