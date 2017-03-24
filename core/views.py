@@ -14,9 +14,11 @@ def signup(request):
     if request.method == 'POST':
         user_form = SignUpForm(request.POST)
         profile_form = ProfileForm(request.POST)
-        if user_form.is_valid():
+        if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
-            profile_form.save()
+            user.profile.bio = profile_form.cleaned_data.get('bio')
+            user.profile.location = profile_form.cleaned_data.get('location')
+            user.profile.save()
             user.refresh_from_db()  # load the profile instance created by the signal
             user.profile.birth_date = user_form.cleaned_data.get('birth_date')
             user.save()
