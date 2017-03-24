@@ -1,19 +1,16 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 
-from .forms import UserForm, UserProfileForm, BookForm, RemoveBookForm
-from .models import Book, UserProfile
+from .forms import UserForm, ProfileForm, BookForm, RemoveBookForm
+from .models import Book
 
 
+@login_required
 def home(request):
-    if not request.user.is_authenticated():
-        return render(request, 'books/login.html')
-
     username = request.user.username
     book_list = Book.objects.order_by('book_name')[:50]
     return render(request, 'books/home.html', {'book_list': book_list, 'username': username})
@@ -28,60 +25,57 @@ def detail(request, book_id):
     return render(request, 'books/detail.html', {'book': book, 'username': username})
 
 
-def logout_user(request):
-    logout(request)
-    user_form = UserForm(request.POST or None)
-    context = {
-        "user_form": user_form,
-    }
-    return render(request, 'books/login.html', context)
+# def logout_user(request):
+#     logout(request)
+#     user_form = UserForm(request.POST or None)
+#     context = {
+#         "user_form": user_form,
+#     }
+#     return render(request, 'books/login.html', context)
 
 
-def login_user(request):
-    if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                book_list = Book.objects.order_by('book_name')[:50]
-                username = request.user.username
-                return render(request, 'books/home.html', {'book_list': book_list, 'username': username, })
-            else:
-                return render(request, 'books/login.html', {'error_message': 'Your account has been disabled'})
-        else:
-            return render(request, 'books/login.html', {'error_message': 'Invalid login'})
-    return render(request, 'books/login.html')
+# def login_user(request):
+#     if request.method == "POST":
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(username=username, password=password)
+#         if user is not None:
+#             if user.is_active:
+#                 login(request, user)
+#                 book_list = Book.objects.order_by('book_name')[:50]
+#                 username = request.user.username
+#                 return render(request, 'books/home.html', {'book_list': book_list, 'username': username, })
+#             else:
+#                 return render(request, 'books/login.html', {'error_message': 'Your account has been disabled'})
+#         else:
+#             return render(request, 'books/login.html', {'error_message': 'Invalid login'})
+#     return render(request, 'books/login.html')
 
 
 def register(request):
-    user_form = UserForm(request.POST or None)
-    profile_form = UserProfileForm(request.POST or None)
-    if user_form.is_valid() and profile_form.is_valid():
-        user_form.save()
-        profile_form.save()
-        username = user_form.cleaned_data['username']
-        password = user_form.cleaned_data['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                username = request.user.username
-                book_list = Book.objects.order_by('book_name')[:50]
-                return render(request, 'books/home.html', {'book_list': book_list, 'username': username})
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.profile.bio = profile_form.cleaned_data.get('bio')
+            user.profile.location = profile_form.cleaned_data.get('location')
+            user.profile.save()
+            user.refresh_from_db()  # load the profile instance created by the signal
+            user.profile.birth_date = user_form.cleaned_data.get('birth_date')
+            user.save()
+            raw_password = user_form.cleaned_data.get('password1')
+            user = authenticate(username=user.username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        user_form = UserForm()
+        profile_form = ProfileForm()
+    return render(request, 'register.html', {'user_form': user_form, 'profile_form': profile_form})
 
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-    }
-    return render(request, 'books/register.html', context)
 
-
+@login_required
 def addbook(request):
-    if not request.user.is_authenticated():
-        return render(request, 'books/login.html')
-
     username = request.user.username
     if username == 'admin':
         if request.method == 'GET':
@@ -119,10 +113,8 @@ def addbook(request):
                 return render(request, 'books/addbook.html', {'error_message': "Data is invalid"})
 
 
+@login_required
 def removeBook(request):
-    if not request.user.is_authenticated():
-        return render(request, 'books/login.html')
-
     username = request.user.username
     if username == 'admin':
 
@@ -147,10 +139,8 @@ def removeBook(request):
                 return render(request, 'books/removebook.html', {'error_message': "Give correct Id or Name"})
 
 
+@login_required
 def search(request):
-    if not request.user.is_authenticated():
-        return render(request, 'books/login.html')
-
     username = request.user.username
     query = request.GET['book_name']
     if query:
@@ -172,13 +162,10 @@ def search(request):
         return render(request, 'books/home.html', context)
 
 
+@login_required
 def profile(request):
-    if not request.user.is_authenticated():
-        return render(request, 'books/login.html')
-
     username = request.user.username
     user = User.objects.get(username=username)
-    print user.first_name
     return render(request, 'books/profile.html', {'user': user, 'username': username,})
 
 

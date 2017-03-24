@@ -4,50 +4,33 @@
 {% block register_active %}active{% endblock %}
 
 {% block content %}
-    <h3>Register for an Account</h3>
-    {% if error_message %}
-        <p><strong>{{ error_message }}</strong></p>
-    {% endif %}
-    <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in user_form %}
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <span class="text-danger small">{{ field.errors }}</span>
-                </div>
-                <label class="control-label col-sm-2">{{ field.label_tag }}</label>
-                <div class="col-sm-5">{{ field }}</div>
-            </div>
+    <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in user_form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
         {% endfor %}
-        {% for field in profile_form %}
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <span class="text-danger small">{{ field.errors }}</span>
-                </div>
-                <label class="control-label col-sm-2">{{ field.label_tag }}</label>
-                <div class="col-sm-5">
-                    {% if field.choices %}
-                        <select>
-                            {% for choice in field.choices %}
-                                <option name="b_id" value="{{choice.0}}">{{choice.1}}</option>
-                                print choice.0
-                                print choice.1
-                            {% endfor %}
-                        </select>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                </div>
-            </div>
+      </p>
+    {% endfor %}
+      {% for field in profile_form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
         {% endfor %}
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-success">Submit</button>
-            </div>
-        </div>
-    </form>
-    <div class="panel-footer">
-        Already have an account? <a href="{% url 'books:login_user' %}">Click here</a> to log in.
-    </div>
+      </p>
+    {% endfor %}
+    <button type="submit">Sign up</button>
+  </form>
 {% endblock %}
